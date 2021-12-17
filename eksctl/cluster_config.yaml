@@ -1,0 +1,36 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: acme-test-cluster
+  region: us-east-1
+  version: "1.21"
+
+vpc:
+  id: vpc-XXX                           # put in vpcID from output of terraform output
+  subnets:
+    public:
+      us-east-1a: { id: subnet-YYY }    # put in subnetID from output of terraform output
+      us-east-1b: { id: subnet-ZZZ }    # put in subnetID from output of terraform output
+      
+  
+managedNodeGroups:
+#nodeGroups:
+  - name: acme-test-cluster-workers
+    minSize: 3
+    maxSize: 6
+    desiredCapacity: 3
+    instanceType: m5.2xlarge
+    labels: {role: worker}
+    ssh:
+      publicKeyPath: ~/.ssh/id_rsa.pub
+    tags:
+      nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        externalDNS: true
+        #certManager: true
+        #albIngress: true
+
+
+# usage:  eksctl create cluster --config-file ./cluster_config.yaml
+#         eksctl delete cluster --config-file ./cluster_config.yaml
