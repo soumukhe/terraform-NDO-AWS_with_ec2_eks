@@ -8,16 +8,16 @@ variable "creds" {
     username = "someuser"
     password = "something"
     url      = "someurl"
-    domain   = "remoteuserRadius"    # comment out if using local ND user instead of remote user
+    domain   = "remoteuserRadius" # comment out if using local ND user instead of remote user
   }
 }
 
 variable "tenant_stuff" {
-  type = object ({
-    tenant_name = string
+  type = object({
+    tenant_name  = string
     display_name = string
-    description = string
-    })
+    description  = string
+  })
   default = {
     tenant_name  = "sm-terraform-T1"
     display_name = "sm-Terraform-Tenant"
@@ -27,12 +27,12 @@ variable "tenant_stuff" {
 
 
 variable "schema_name" {
-  type = string
+  type    = string
   default = "some_value"
 }
 
 variable "template_name" {
-  type = string
+  type    = string
   default = "some_value"
 }
 
@@ -42,68 +42,68 @@ variable "aws_aws_site10_name" {
 }
 
 variable "vrf_name" {
-  type = string
+  type    = string
   default = "some_value"
 }
 
 variable "bd_name" {
-  type = string
+  type    = string
   default = "some_value"
 }
 
 variable "anp_name" {
-  type = string
+  type    = string
   default = "some_value"
 }
 
 variable "epg_name" {
-  type = string
+  type    = string
   default = "some_value"
 }
 
 variable "epg_selector_value" {
-  type = string
+  type    = string
   default = "some_value"
 }
 
 variable "region_name" {
-  type = string
+  type    = string
   default = "some_value"
 }
 
 variable "cidr_ip" {
-  type = string
+  type    = string
   default = "some_value"
 }
 
 variable "subnet1" {
-  type = string
+  type    = string
   default = "some_value"
 }
 
 
 variable "subnet2" {
-  type = string
+  type    = string
   default = "some_value"
 }
 
 variable "subnet3" {
-  type = string
+  type    = string
   default = "some_value"
 }
 
 variable "zone1" {
-  type = string
+  type    = string
   default = "some_value"
 }
 
 variable "zone2" {
-  type = string
+  type    = string
   default = "some_value"
 }
 
 variable "zone3" {
-  type = string
+  type    = string
   default = "some_value"
 }
 

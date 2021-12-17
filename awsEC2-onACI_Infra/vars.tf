@@ -31,6 +31,6 @@ variable "region" {
 
 
 variable "num_inst" {
-  type = number
+  type        = number
   description = "enter the number of instances you want"
 }

@@ -5,7 +5,7 @@
 terraform {
   required_providers {
     mso = {
-      source = "ciscodevnet/mso"
+      source  = "ciscodevnet/mso"
       version = ">= 0.4.0"
     }
   }

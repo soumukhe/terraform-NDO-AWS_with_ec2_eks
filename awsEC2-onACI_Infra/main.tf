@@ -3,10 +3,10 @@
 terraform {
   required_version = ">1.0"
   required_providers {
-      aws = {
-       version = "~>3.6"
-   }
- }
+    aws = {
+      version = "~>3.6"
+    }
+  }
 }
 
 
@@ -22,14 +22,14 @@ provider "aws" {
 
 data "aws_vpcs" "vpc_id" {
   tags = {
-    AciPolicyDnTag  =    "*-sm-terraform-*" # adding filter for "uni/tn-sm-terraform-T1/ctxprofile-vrf1-us-east-1"
+    AciPolicyDnTag = "*-sm-terraform-*" # adding filter for "uni/tn-sm-terraform-T1/ctxprofile-vrf1-us-east-1"
   }
 }
 
 
 # Set a variable for vpcid value obtained
 locals {
-   vpcid = element(tolist(data.aws_vpcs.vpc_id.ids),0)
+  vpcid = element(tolist(data.aws_vpcs.vpc_id.ids), 0)
 }
 
 
@@ -38,15 +38,15 @@ locals {
 
 #  Get the full map for subnet IDs
 data "aws_subnet_ids" "example" {
-   vpc_id = local.vpcid
+  vpc_id = local.vpcid
 }
 
 
 # set variables for subnetIDs obtained.  Note we have to use type conversion "tolist" and then extract elements from the list
 locals {
-  subnetid1 = element(tolist(data.aws_subnet_ids.example.ids),0)
-  subnetid2 = element(tolist(data.aws_subnet_ids.example.ids),1)
-  subnetid3 = element(tolist(data.aws_subnet_ids.example.ids),3)
+  subnetid1 = element(tolist(data.aws_subnet_ids.example.ids), 0)
+  subnetid2 = element(tolist(data.aws_subnet_ids.example.ids), 1)
+  subnetid3 = element(tolist(data.aws_subnet_ids.example.ids), 3)
 }
 
 
@@ -57,9 +57,9 @@ locals {
 ##  so, first do:   cp ~/.ssh/id_rsa.pub   ./.certs
 
 resource "aws_key_pair" "loginkey" {
-  key_name   = try("login-key")        #  using function try here.  If key is already present don't mess with it
+  key_name = try("login-key") #  using function try here.  If key is already present don't mess with it
   #public_key = file("${path.module}/.certs/id_rsa.pub")  # #  path.module is in relation to the current directory, in case you want to put your id_rsa.pub in ./.certs folder
-  public_key = file("~/.ssh/id_rsa.pub") 
+  public_key = file("~/.ssh/id_rsa.pub")
 }
 
 
@@ -69,11 +69,11 @@ resource "aws_key_pair" "loginkey" {
 
 data "aws_ami" "std_ami" {
   most_recent = true
-  owners  = ["amazon"]
+  owners      = ["amazon"]
 
-filter {
-  name = "name"
-  values = ["amzn2-ami-hvm*"]
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm*"]
   }
 }
 
@@ -82,12 +82,12 @@ filter {
 
 resource "aws_instance" "sm-terraform1-ec2" {
   #ami = lookup(var.ami,var.region)   # this function will give you ami-04bf6dcdc9ab498ca   # ##lookup (map, key, default)
-  ami = data.aws_ami.std_ami.id
-  instance_type = var.instance_type
-  subnet_id = local.subnetid3
+  ami                         = data.aws_ami.std_ami.id
+  instance_type               = var.instance_type
+  subnet_id                   = local.subnetid3
   associate_public_ip_address = true
-  key_name = aws_key_pair.loginkey.key_name
-  count = var.num_inst
+  key_name                    = aws_key_pair.loginkey.key_name
+  count                       = var.num_inst
   tags = {
     name = "ec2-${count.index}" # first instance will be ec2-0, then ec2-1 etc, etc
   }
@@ -109,34 +109,34 @@ resource "null_resource" "update" {
   }
 
   provisioner "local-exec" {
-    command = "sleep 30"          # buy a little time to make sure ec2 is reachable
+    command = "sleep 30" # buy a little time to make sure ec2 is reachable
   }
 }
 
 # install httpd on all the EC2 instances.  We are using count.index to make sure all EC2s are configured
 resource "null_resource" "apache2" {
   depends_on = [null_resource.update]
-  count = var.num_inst
+  count      = var.num_inst
   triggers = {
     build_number = timestamp()
   }
 
   provisioner "remote-exec" {
     inline = [
-       "sudo yum update -y",
-       "sudo yum install httpd  -y",
-       "echo Hello world from $(hostname), private ip = $(hostname -i) > index.html",
-       "sudo mv index.html /var/www/html/index.html",
-       "sudo service httpd start",
-       "sudo systemctl restart httpd",
-       "sudo systemctl enable httpd",
+      "sudo yum update -y",
+      "sudo yum install httpd  -y",
+      "echo Hello world from $(hostname), private ip = $(hostname -i) > index.html",
+      "sudo mv index.html /var/www/html/index.html",
+      "sudo service httpd start",
+      "sudo systemctl restart httpd",
+      "sudo systemctl enable httpd",
     ]
 
     connection {
-      type = "ssh"
-      user = "ec2-user"  # this is the inbuilt ec2 user name for the used ami
+      type        = "ssh"
+      user        = "ec2-user" # this is the inbuilt ec2 user name for the used ami
       private_key = file("~/.ssh/id_rsa")
-      host = aws_instance.sm-terraform1-ec2[count.index].public_ip
+      host        = aws_instance.sm-terraform1-ec2[count.index].public_ip
     }
   }
 }
@@ -146,27 +146,27 @@ resource "null_resource" "apache2" {
 ## show vpc_id
 output "vpc_id" {
   #value = data.aws_vpcs.vpc_id.ids
-  value = element(tolist(data.aws_vpcs.vpc_id.ids),0)
+  value = element(tolist(data.aws_vpcs.vpc_id.ids), 0)
 }
 ## show subnet IDs
 output "subnetid1" {
-  value =  local.subnetid1
+  value = local.subnetid1
 }
 
 output "subnetid2" {
-  value =  local.subnetid2
+  value = local.subnetid2
 }
 
 
 output "subnetid3" {
-  value =  local.subnetid3
+  value = local.subnetid3
 }
 
 ## Show Public IPs
 output "publicIP" {
 
   value = {
-    for instance in aws_instance.sm-terraform1-ec2:
+    for instance in aws_instance.sm-terraform1-ec2 :
     instance.id => instance.public_ip
   }
 }

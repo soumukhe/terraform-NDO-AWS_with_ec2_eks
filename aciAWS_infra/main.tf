@@ -54,7 +54,7 @@ resource "mso_schema_site" "aws_site10" {
 ## Create VRF
 
 resource "mso_schema_template_vrf" "vrf1" {
-  schema_id = mso_schema.schema1.id
+  schema_id        = mso_schema.schema1.id
   template         = mso_schema.schema1.template_name
   name             = var.vrf_name
   display_name     = var.vrf_name
@@ -84,7 +84,7 @@ resource "mso_schema_site_vrf_region" "vrfRegion" {
     name        = "default"
     tenant_name = "infra"
   }
-    cidr {
+  cidr {
     cidr_ip = var.cidr_ip
     primary = true
 
@@ -168,15 +168,15 @@ resource "mso_schema_site_anp_epg_selector" "epgSel1" {
 
 ## create extEPG
 resource "mso_schema_template_external_epg" "template_externalepg" {
-  schema_id         = mso_schema_site_anp_epg_selector.epgSel1.schema_id  #mso_schema.schema1.id
-  template_name     = mso_schema_site_anp_epg_selector.epgSel1.template_name          #mso_schema.schema1.template_name
+  schema_id         = mso_schema_site_anp_epg_selector.epgSel1.schema_id     #mso_schema.schema1.id
+  template_name     = mso_schema_site_anp_epg_selector.epgSel1.template_name #mso_schema.schema1.template_name
   external_epg_name = "extEPG1"
   external_epg_type = "cloud"
   display_name      = "extEPG1"
-  vrf_name          = mso_schema_template_vrf.vrf1.name 
+  vrf_name          = mso_schema_template_vrf.vrf1.name
   anp_name          = mso_schema_template_anp.anp1.name
-  selector_name = "extEPGsel1"
-  selector_ip   = "0.0.0.0/0"
+  selector_name     = "extEPGsel1"
+  selector_ip       = "0.0.0.0/0"
 }
 
 resource "mso_schema_site_external_epg" "site_externalepg" {
@@ -190,77 +190,77 @@ resource "mso_schema_site_external_epg" "site_externalepg" {
 
 ## create Filter
 resource "mso_schema_template_filter_entry" "filter_entry" {
-        schema_id           = mso_schema_site_external_epg.site_externalepg.schema_id    #mso_schema.schema1.id
-        template_name       = mso_schema_site_external_epg.site_externalepg.template_name   #mso_schema.schema1.template_name
-        name = "Any"
-        display_name="Any"
-        entry_name = "Any"
-        entry_display_name="Any"
-        destination_from="unspecified"
-        destination_to="unspecified"
-        source_from="unspecified"
-        source_to="unspecified"
-        arp_flag="unspecified"
+  schema_id          = mso_schema_site_external_epg.site_externalepg.schema_id     #mso_schema.schema1.id
+  template_name      = mso_schema_site_external_epg.site_externalepg.template_name #mso_schema.schema1.template_name
+  name               = "Any"
+  display_name       = "Any"
+  entry_name         = "Any"
+  entry_display_name = "Any"
+  destination_from   = "unspecified"
+  destination_to     = "unspecified"
+  source_from        = "unspecified"
+  source_to          = "unspecified"
+  arp_flag           = "unspecified"
 }
 
 
 ## Create Contract
 resource "mso_schema_template_contract" "template_contract" {
-  schema_id           = mso_schema_template_filter_entry.filter_entry.schema_id
-  template_name       = mso_schema_template_filter_entry.filter_entry.template_name
+  schema_id     = mso_schema_template_filter_entry.filter_entry.schema_id
+  template_name = mso_schema_template_filter_entry.filter_entry.template_name
   contract_name = try("C1")
-  display_name =  try("C1")
-  scope = "context"
-  directives = ["none"]
+  display_name  = try("C1")
+  scope         = "context"
+  directives    = ["none"]
 }
 
 ### Associate filter with Contract
 resource "mso_schema_template_contract_filter" "Any" {
-  schema_id = mso_schema_template_contract.template_contract.schema_id 
+  schema_id     = mso_schema_template_contract.template_contract.schema_id
   template_name = mso_schema_template_contract.template_contract.template_name
-  contract_name = mso_schema_template_contract.template_contract.contract_name     # "C1"
-  filter_type = "bothWay"
-  filter_name = "Any"
-  directives = ["none","log"]
+  contract_name = mso_schema_template_contract.template_contract.contract_name # "C1"
+  filter_type   = "bothWay"
+  filter_name   = "Any"
+  directives    = ["none", "log"]
 }
 
 #### add Contract Provider and Consumer to EPg
 resource "mso_schema_template_anp_epg_contract" "c1_epg_provider" {
-  schema_id           = mso_schema_template_contract_filter.Any.schema_id
-  template_name       = mso_schema_template_contract_filter.Any.template_name
-  anp_name = mso_schema_site_anp_epg.site_anp_epg.anp_name
-  epg_name = mso_schema_site_anp_epg.site_anp_epg.epg_name
-  contract_name = mso_schema_template_contract.template_contract.contract_name
+  schema_id         = mso_schema_template_contract_filter.Any.schema_id
+  template_name     = mso_schema_template_contract_filter.Any.template_name
+  anp_name          = mso_schema_site_anp_epg.site_anp_epg.anp_name
+  epg_name          = mso_schema_site_anp_epg.site_anp_epg.epg_name
+  contract_name     = mso_schema_template_contract.template_contract.contract_name
   relationship_type = "provider"
 
 }
 
 
 resource "mso_schema_template_anp_epg_contract" "c1_epg_consumer" {
-  schema_id           = mso_schema_template_anp_epg_contract.c1_epg_provider.schema_id
-  template_name       = mso_schema_template_anp_epg_contract.c1_epg_provider.template_name 
-  anp_name =  mso_schema_template_anp_epg_contract.c1_epg_provider.anp_name
-  epg_name = mso_schema_template_anp_epg_contract.c1_epg_provider.epg_name
-  contract_name = mso_schema_template_contract.template_contract.contract_name
+  schema_id         = mso_schema_template_anp_epg_contract.c1_epg_provider.schema_id
+  template_name     = mso_schema_template_anp_epg_contract.c1_epg_provider.template_name
+  anp_name          = mso_schema_template_anp_epg_contract.c1_epg_provider.anp_name
+  epg_name          = mso_schema_template_anp_epg_contract.c1_epg_provider.epg_name
+  contract_name     = mso_schema_template_contract.template_contract.contract_name
   relationship_type = "consumer"
 
 }
 
 #### Add Provider and Consumer to extEPGs
 resource "mso_schema_template_external_epg_contract" "c1_ext_epg_provider" {
-  schema_id           = mso_schema_template_anp_epg_contract.c1_epg_consumer.schema_id
-  template_name       = mso_schema_template_anp_epg_contract.c1_epg_consumer.template_name 
+  schema_id         = mso_schema_template_anp_epg_contract.c1_epg_consumer.schema_id
+  template_name     = mso_schema_template_anp_epg_contract.c1_epg_consumer.template_name
   external_epg_name = mso_schema_template_external_epg.template_externalepg.external_epg_name
-  contract_name = mso_schema_template_contract.template_contract.contract_name
+  contract_name     = mso_schema_template_contract.template_contract.contract_name
   relationship_type = "provider"
 
 }
 
 resource "mso_schema_template_external_epg_contract" "c1_ext_epg_consumer" {
-  schema_id           = mso_schema_template_external_epg_contract.c1_ext_epg_provider.schema_id
-  template_name       = mso_schema_template_external_epg_contract.c1_ext_epg_provider.template_name
+  schema_id         = mso_schema_template_external_epg_contract.c1_ext_epg_provider.schema_id
+  template_name     = mso_schema_template_external_epg_contract.c1_ext_epg_provider.template_name
   external_epg_name = mso_schema_template_external_epg.template_externalepg.external_epg_name
-  contract_name = mso_schema_template_contract.template_contract.contract_name
+  contract_name     = mso_schema_template_contract.template_contract.contract_name
   relationship_type = "consumer"
 
 }
@@ -289,7 +289,7 @@ resource "mso_schema_template_deploy" "template_deployer" {
     mso_schema_template_anp_epg_contract.c1_epg_consumer,
     mso_schema_template_external_epg_contract.c1_ext_epg_provider,
     mso_schema_template_external_epg_contract.c1_ext_epg_consumer
-    
+
   ]
   #undeploy = true
 }
