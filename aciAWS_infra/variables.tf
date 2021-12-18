@@ -36,7 +36,7 @@ variable "template_name" {
   default = "some_value"
 }
 
-variable "aws_aws_site10_name" {
+variable "aws_site_name" {
   type    = string
   default = "AWS10"
 }

@@ -2,8 +2,8 @@
 
 #  Define data sources
 
-data "mso_site" "aws_site10" {
-  name = var.aws_aws_site10_name
+data "mso_site" "aws_site" {
+  name = var.aws_site_name
 }
 
 
@@ -25,7 +25,7 @@ resource "mso_tenant" "tenant" {
   display_name = var.tenant_stuff.display_name
   description  = var.tenant_stuff.description
   site_associations {
-    site_id           = data.mso_site.aws_site10.id
+    site_id           = data.mso_site.aws_site.id
     vendor            = "aws"
     aws_account_id    = var.awsstuff.aws_account_id
     aws_access_key_id = var.awsstuff.aws_access_key_id
@@ -45,9 +45,9 @@ resource "mso_schema" "schema1" {
 
 ## Associate Schema / template with Site
 
-resource "mso_schema_site" "aws_site10" {
+resource "mso_schema_site" "aws_site" {
   schema_id     = mso_schema.schema1.id
-  site_id       = data.mso_site.aws_site10.id
+  site_id       = data.mso_site.aws_site.id
   template_name = mso_schema.schema1.template_name
 }
 
@@ -64,8 +64,8 @@ resource "mso_schema_template_vrf" "vrf1" {
 
 resource "mso_schema_site_vrf" "aws_site" {
   schema_id     = mso_schema.schema1.id
-  template_name = mso_schema_site.aws_site10.template_name
-  site_id       = data.mso_site.aws_site10.id
+  template_name = mso_schema_site.aws_site.template_name
+  site_id       = data.mso_site.aws_site.id
   vrf_name      = mso_schema_template_vrf.vrf1.name
 }
 
@@ -74,8 +74,8 @@ resource "mso_schema_site_vrf" "aws_site" {
 ## associate with Region and zones in Site Local Templates
 resource "mso_schema_site_vrf_region" "vrfRegion" {
   schema_id          = mso_schema.schema1.id
-  template_name      = mso_schema_site.aws_site10.template_name
-  site_id            = data.mso_site.aws_site10.id
+  template_name      = mso_schema_site.aws_site.template_name
+  site_id            = data.mso_site.aws_site.id
   vrf_name           = mso_schema_site_vrf.aws_site.vrf_name
   region_name        = var.region_name
   vpn_gateway        = false
@@ -122,8 +122,8 @@ resource "mso_schema_template_anp" "anp1" {
 resource "mso_schema_site_anp" "anp1" {
   schema_id     = mso_schema.schema1.id
   anp_name      = mso_schema_template_anp.anp1.name
-  template_name = mso_schema_site.aws_site10.template_name
-  site_id       = data.mso_site.aws_site10.id
+  template_name = mso_schema_site.aws_site.template_name
+  site_id       = data.mso_site.aws_site.id
 }
 
 ## create EPG
@@ -144,8 +144,8 @@ resource "mso_schema_template_anp_epg" "anp_epg" {
 
 resource "mso_schema_site_anp_epg" "site_anp_epg" {
   schema_id     = mso_schema.schema1.id
-  template_name = mso_schema_site.aws_site10.template_name
-  site_id       = data.mso_site.aws_site10.id
+  template_name = mso_schema_site.aws_site.template_name
+  site_id       = data.mso_site.aws_site.id
   anp_name      = mso_schema_site_anp.anp1.anp_name
   epg_name      = mso_schema_template_anp_epg.anp_epg.name
 }
@@ -154,8 +154,8 @@ resource "mso_schema_site_anp_epg" "site_anp_epg" {
 
 resource "mso_schema_site_anp_epg_selector" "epgSel1" {
   schema_id     = mso_schema.schema1.id
-  site_id       = data.mso_site.aws_site10.id
-  template_name = mso_schema_site.aws_site10.template_name
+  site_id       = data.mso_site.aws_site.id
+  template_name = mso_schema_site.aws_site.template_name
   anp_name      = mso_schema_site_anp_epg.site_anp_epg.anp_name
   epg_name      = mso_schema_site_anp_epg.site_anp_epg.epg_name
   name          = "epgSel1"
@@ -182,7 +182,7 @@ resource "mso_schema_template_external_epg" "template_externalepg" {
 resource "mso_schema_site_external_epg" "site_externalepg" {
   schema_id         = mso_schema_template_external_epg.template_externalepg.schema_id
   template_name     = mso_schema_template_external_epg.template_externalepg.template_name
-  site_id           = mso_schema_site.aws_site10.site_id
+  site_id           = mso_schema_site.aws_site.site_id
   external_epg_name = mso_schema_template_external_epg.template_externalepg.external_epg_name
 }
 
@@ -272,7 +272,7 @@ resource "mso_schema_template_deploy" "template_deployer" {
   depends_on = [
     mso_tenant.tenant,
     mso_schema.schema1,
-    mso_schema_site.aws_site10,
+    mso_schema_site.aws_site,
     mso_schema_template_vrf.vrf1,
     mso_schema_site_vrf.aws_site,
     mso_schema_site_vrf_region.vrfRegion,

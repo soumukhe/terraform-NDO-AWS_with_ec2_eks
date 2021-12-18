@@ -81,7 +81,6 @@ data "aws_ami" "std_ami" {
 
 
 resource "aws_instance" "sm-terraform1-ec2" {
-  #ami = lookup(var.ami,var.region)   # this function will give you ami-04bf6dcdc9ab498ca   # ##lookup (map, key, default)
   ami                         = data.aws_ami.std_ami.id
   instance_type               = var.instance_type
   subnet_id                   = local.subnetid3

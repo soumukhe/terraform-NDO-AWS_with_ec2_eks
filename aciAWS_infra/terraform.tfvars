@@ -1,5 +1,8 @@
 #  Values of variables to override default values defined in variables.tf
 
+
+aws_site_name = "AWS10"
+
 schema_name   = "SM-Terraform-Tenant-Schema"
 template_name = "shared-template"
 vrf_name      = "vrf1"
