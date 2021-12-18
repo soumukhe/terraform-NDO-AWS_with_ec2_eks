@@ -38,7 +38,7 @@ variable "template_name" {
 
 variable "aws_site_name" {
   type    = string
-  default = "AWS10"
+  default = "site_name_as_seen_on_NDO"
 }
 
 variable "vrf_name" {
