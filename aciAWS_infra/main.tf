@@ -12,7 +12,7 @@ data "mso_user" "admin" {
 }
 
 data "mso_user" "user1" {
-  username = "var.user_association"
+  username = var.user_association
 }
 
 
