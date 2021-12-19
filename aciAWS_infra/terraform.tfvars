@@ -21,7 +21,7 @@ subnet2 = "10.140.2.0/24" # subnet should belong to CIDR
 zone2   = "us-east-1b"    # az should be the 2nd az in the chosen region.
 
 subnet3 = "10.140.3.0/24" # subnet should belong to CIDR
-zone3   = "us-east-1b"    # az should be the 2nd az in the chosen region.
+zone3   = "us-east-1b"    # az should be the 2nd az in the chosen region.  Only 2 zones are allowed per region currently in cAPIC
 
 
 epg_selector_value = "10.140.0.0/16" # EPG Selector to ensure proper Security Rules as defined by ACI Contracts
