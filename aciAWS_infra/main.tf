@@ -11,8 +11,8 @@ data "mso_user" "admin" {
   username = "admin"
 }
 
-data "mso_user" "soumukhe" {
-  username = "soumukhe"
+data "mso_user" "user1" {
+  username = "var.user_association"
 }
 
 
@@ -32,7 +32,7 @@ resource "mso_tenant" "tenant" {
     aws_secret_key    = var.awsstuff.aws_secret_key
   }
   user_associations { user_id = data.mso_user.admin.id }
-  user_associations { user_id = data.mso_user.soumukhe.id }
+  user_associations { user_id = data.mso_user.user1.id }
 }
 
 ## create schema

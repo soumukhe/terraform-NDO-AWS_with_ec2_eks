@@ -12,6 +12,11 @@ variable "creds" {
   }
 }
 
+variable "user_association" {
+  type        = string
+  description = "this is the user that get's associated with tenant"
+}
+
 variable "tenant_stuff" {
   type = object({
     tenant_name  = string
