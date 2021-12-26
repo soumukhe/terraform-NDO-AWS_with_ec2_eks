@@ -11,7 +11,9 @@ vpc:
     public:
       us-east-1a: { id: subnet-YYY }    # put in subnetID from output of terraform output
       us-east-1b: { id: subnet-ZZZ }    # put in subnetID from output of terraform output
-      
+    private:   
+      us-east-1a: { id: subnet-YYY }    # put in subnetID from output of terraform output
+      us-east-1b: { id: subnet-ZZZ }    # put in subnetID from output of terraform output
   
 managedNodeGroups:
 #nodeGroups:
