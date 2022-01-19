@@ -27,3 +27,5 @@ zone3   = "us-east-1b"    # az should be the 2nd az in the chosen region.  Only 
 epg_selector_value = "10.140.0.0/16" # EPG Selector to ensure proper Security Rules as defined by ACI Contracts
 
 user_association = "soumukhe" #  the user to get associated with the tenant
+
+tgw_name = "TGW"   # this is the TGW name that you configured during initial cAPIC setup
