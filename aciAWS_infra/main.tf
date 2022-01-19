@@ -81,7 +81,7 @@ resource "mso_schema_site_vrf_region" "vrfRegion" {
   vpn_gateway        = false
   hub_network_enable = true
   hub_network = {
-    name        = "default"
+    name        = var.tgw_name
     tenant_name = "infra"
   }
   cidr {
